@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual environments
+venv/
+.venv/
+
+# Hugging Face cache
+.cache/
+huggingface/
+.cache/huggingface/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Datasets
+data/raw/
+data/processed/
+
+# Model files
+*.safetensors
+*.pth
+*.pt
+*.ckpt
