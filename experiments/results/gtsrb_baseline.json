@@ -1,0 +1,11 @@
+{
+    "dataset": "GTSRB",
+    "model": "TrafficSignCNN",
+    "experiment": "clean_baseline",
+    "test_samples": 12630,
+    "num_classes": 43,
+    "training_epochs": 10,
+    "best_validation_accuracy": 0.9904361132364193,
+    "test_accuracy": 0.9333333333333333,
+    "macro_f1": 0.9064264637560346
+}
