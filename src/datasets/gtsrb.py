@@ -4,6 +4,7 @@ import pandas as pd
 from PIL import Image
 from sklearn.model_selection import train_test_split
 from torch.utils.data import Dataset, DataLoader
+from .preprocessing import get_train_transform, get_eval_transform
 
 
 class GTSRBDataset(Dataset):
@@ -98,13 +99,13 @@ def create_gtsrb_datasets(
 ):
     """
     Create GTSRB train, validation, and test datasets.
-
-    The official GTSRB training data is split into:
-        - 80% training
-        - 20% validation
-
-    The official GTSRB test set remains untouched.
     """
+
+    if train_transform is None:
+        train_transform = get_train_transform()
+
+    if eval_transform is None:
+        eval_transform = get_eval_transform()
 
     root_dir = Path(root_dir)
 
