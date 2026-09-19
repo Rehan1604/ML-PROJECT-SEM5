@@ -1,0 +1,11 @@
+{
+    "dataset": "BTSD",
+    "model": "TrafficSignCNN",
+    "experiment": "clean_baseline",
+    "test_samples": 2520,
+    "num_classes": 62,
+    "training_epochs": 9,
+    "best_validation_accuracy": 0.9530054644808743,
+    "test_accuracy": 0.9035714285714286,
+    "macro_f1": 0.7012757364430993
+}

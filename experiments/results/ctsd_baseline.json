@@ -1,0 +1,10 @@
+{
+    "dataset": "CTSD",
+    "model": "TrafficSignCNN",
+    "num_classes": 58,
+    "test_samples": 1199,
+    "training_epoch": 10,
+    "best_validation_accuracy": 0.9108333333333334,
+    "test_accuracy": 0.9291075896580484,
+    "macro_f1": 0.9144634245165173
+}

@@ -4,9 +4,20 @@ from tqdm import tqdm
 from src.training.checkpoint import save_checkpoint
 
 
-def train_one_epoch(model, train_loader, optimizer, criterion, device):
+def train_one_epoch(
+    model,
+    train_loader,
+    optimizer,
+    criterion,
+    device,
+):
     """
     Train the model for one epoch.
+
+    Supports datasets returning either:
+        (image, label)
+    or:
+        (image, label, metadata)
 
     Returns:
         average training loss
@@ -19,9 +30,19 @@ def train_one_epoch(model, train_loader, optimizer, criterion, device):
     correct = 0
     total = 0
 
-    progress_bar = tqdm(train_loader, desc="Training", leave=False)
+    progress_bar = tqdm(
+        train_loader,
+        desc="Training",
+        leave=False,
+    )
 
-    for images, labels in progress_bar:
+    for batch in progress_bar:
+        # Works with both:
+        # (images, labels)
+        # (images, labels, metadata)
+        images = batch[0]
+        labels = batch[1]
+
         images = images.to(device)
         labels = labels.to(device)
 
@@ -37,10 +58,18 @@ def train_one_epoch(model, train_loader, optimizer, criterion, device):
         running_loss += loss.item() * images.size(0)
 
         predictions = outputs.argmax(dim=1)
-        correct += (predictions == labels).sum().item()
+
+        correct += (
+            (predictions == labels)
+            .sum()
+            .item()
+        )
+
         total += labels.size(0)
 
-        progress_bar.set_postfix(loss=loss.item())
+        progress_bar.set_postfix(
+            loss=loss.item()
+        )
 
     epoch_loss = running_loss / total
     epoch_accuracy = correct / total
@@ -49,9 +78,19 @@ def train_one_epoch(model, train_loader, optimizer, criterion, device):
 
 
 @torch.no_grad()
-def validate_one_epoch(model, validation_loader, criterion, device):
+def validate_one_epoch(
+    model,
+    validation_loader,
+    criterion,
+    device,
+):
     """
     Evaluate the model on the validation set.
+
+    Supports datasets returning either:
+        (image, label)
+    or:
+        (image, label, metadata)
 
     Returns:
         average validation loss
@@ -64,20 +103,44 @@ def validate_one_epoch(model, validation_loader, criterion, device):
     correct = 0
     total = 0
 
-    progress_bar = tqdm(validation_loader, desc="Validation", leave=False)
+    progress_bar = tqdm(
+        validation_loader,
+        desc="Validation",
+        leave=False,
+    )
 
-    for images, labels in progress_bar:
+    for batch in progress_bar:
+        # Works with both:
+        # (images, labels)
+        # (images, labels, metadata)
+        images = batch[0]
+        labels = batch[1]
+
         images = images.to(device)
         labels = labels.to(device)
 
         outputs = model(images)
 
-        loss = criterion(outputs, labels)
+        loss = criterion(
+            outputs,
+            labels,
+        )
 
-        running_loss += loss.item() * images.size(0)
+        running_loss += (
+            loss.item()
+            * images.size(0)
+        )
 
-        predictions = outputs.argmax(dim=1)
-        correct += (predictions == labels).sum().item()
+        predictions = outputs.argmax(
+            dim=1
+        )
+
+        correct += (
+            (predictions == labels)
+            .sum()
+            .item()
+        )
+
         total += labels.size(0)
 
     epoch_loss = running_loss / total
@@ -98,8 +161,11 @@ def train_model(
     """
     Complete model training loop.
 
-    The model with the best validation accuracy is saved
-    when checkpoint_path is provided.
+    The model with the best validation accuracy
+    is saved when checkpoint_path is provided.
+
+    Returns:
+        Training history dictionary.
     """
 
     criterion = nn.CrossEntropyLoss()
@@ -122,27 +188,60 @@ def train_model(
 
     for epoch in range(epochs):
 
-        print(f"\nEpoch {epoch + 1}/{epochs}")
-
-        train_loss, train_accuracy = train_one_epoch(
-            model=model,
-            train_loader=train_loader,
-            optimizer=optimizer,
-            criterion=criterion,
-            device=device,
+        print(
+            f"\nEpoch {epoch + 1}/{epochs}"
         )
 
-        validation_loss, validation_accuracy = validate_one_epoch(
-            model=model,
-            validation_loader=validation_loader,
-            criterion=criterion,
-            device=device,
+        # -------------------------
+        # Training
+        # -------------------------
+
+        train_loss, train_accuracy = (
+            train_one_epoch(
+                model=model,
+                train_loader=train_loader,
+                optimizer=optimizer,
+                criterion=criterion,
+                device=device,
+            )
         )
 
-        history["train_loss"].append(train_loss)
-        history["train_accuracy"].append(train_accuracy)
-        history["validation_loss"].append(validation_loss)
-        history["validation_accuracy"].append(validation_accuracy)
+        # -------------------------
+        # Validation
+        # -------------------------
+
+        validation_loss, validation_accuracy = (
+            validate_one_epoch(
+                model=model,
+                validation_loader=validation_loader,
+                criterion=criterion,
+                device=device,
+            )
+        )
+
+        # -------------------------
+        # Store history
+        # -------------------------
+
+        history[
+            "train_loss"
+        ].append(train_loss)
+
+        history[
+            "train_accuracy"
+        ].append(train_accuracy)
+
+        history[
+            "validation_loss"
+        ].append(validation_loss)
+
+        history[
+            "validation_accuracy"
+        ].append(validation_accuracy)
+
+        # -------------------------
+        # Print results
+        # -------------------------
 
         print(
             f"Train Loss: {train_loss:.4f} | "
@@ -150,22 +249,40 @@ def train_model(
         )
 
         print(
-            f"Validation Loss: {validation_loss:.4f} | "
-            f"Validation Accuracy: {validation_accuracy:.4f}"
+            f"Validation Loss: "
+            f"{validation_loss:.4f} | "
+            f"Validation Accuracy: "
+            f"{validation_accuracy:.4f}"
         )
 
-        if validation_accuracy > best_validation_accuracy:
+        # -------------------------
+        # Save best checkpoint
+        # -------------------------
 
-            best_validation_accuracy = validation_accuracy
+        if (
+            validation_accuracy
+            > best_validation_accuracy
+        ):
+
+            best_validation_accuracy = (
+                validation_accuracy
+            )
 
             if checkpoint_path is not None:
+
                 save_checkpoint(
-                model=model,
-                optimizer=optimizer,
-                epoch=epoch + 1,
-                validation_accuracy=validation_accuracy,
-                path=checkpoint_path,
-                            )
-                print(f"Best model saved to: {checkpoint_path}")
+                    model=model,
+                    optimizer=optimizer,
+                    epoch=epoch + 1,
+                    validation_accuracy=(
+                        validation_accuracy
+                    ),
+                    path=checkpoint_path,
+                )
+
+                print(
+                    "Best model saved to: "
+                    f"{checkpoint_path}"
+                )
 
     return history
