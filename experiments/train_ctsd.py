@@ -15,11 +15,6 @@ from src.models.baseline import TrafficSignCNN
 from src.training.train import train_model
 from src.utils.seed import set_seed
 
-
-# =========================
-# Configuration
-# =========================
-
 BATCH_SIZE = 64
 NUM_WORKERS = 0
 EPOCHS = 10

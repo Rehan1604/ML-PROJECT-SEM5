@@ -55,17 +55,17 @@ def test_ctsd_split():
 
     expected_classes = set(range(58))
 
-    # All 58 classes must be represented across the complete dataset.
+    
     assert all_classes == expected_classes
 
-    # Train and validation must contain different images.
+    
     assert train_paths.isdisjoint(validation_paths)
 
-    # Every label must be valid.
+    
     assert train_classes.issubset(expected_classes)
     assert validation_classes.issubset(expected_classes)
 
-    # The split must preserve all 5998 unique images.
+    
     assert len(train_dataset) + len(validation_dataset) == 5998
 
     assert len(train_dataset) == 4798

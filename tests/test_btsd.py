@@ -20,11 +20,8 @@ def test_btsd_structure():
     train_classes = {label for _, label in train_samples}
     test_classes = {label for _, label in test_samples}
 
-    # BTSD uses class IDs 0 through 61.
     assert train_classes == set(range(NUM_CLASSES))
 
-    # The downloaded BTSD testing split does not contain images for
-    # every class, so testing classes are allowed to be a subset.
     assert test_classes.issubset(set(range(NUM_CLASSES)))
 
 

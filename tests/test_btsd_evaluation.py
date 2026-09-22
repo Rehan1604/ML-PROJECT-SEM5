@@ -76,10 +76,6 @@ def main():
         device=device,
     )
 
-    # -------------------------
-    # Save metrics
-    # -------------------------
-
     results = {
         "dataset": "BTSD",
         "model": "TrafficSignCNN",
@@ -97,9 +93,6 @@ def main():
     with open(RESULTS_JSON, "w") as file:
         json.dump(results, file, indent=4)
 
-    # -------------------------
-    # Save confusion matrix
-    # -------------------------
 
     with open(CONFUSION_CSV, "w", newline="") as file:
         writer = csv.writer(file)
@@ -113,9 +106,6 @@ def main():
                 [class_index] + row.tolist()
             )
 
-    # -------------------------
-    # Print results
-    # -------------------------
 
     print("\n===== BTSD BASELINE TEST RESULTS =====")
     print(

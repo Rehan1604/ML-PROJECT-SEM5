@@ -21,12 +21,6 @@ REQUIRED_COLUMNS = {
 
 
 class CTSDSampleDataset(Dataset):
-    """
-    PyTorch Dataset for the CTSD image classification dataset.
-
-    Labels are read from the category column in annotations.csv.
-    Bounding-box information is preserved in the dataset metadata.
-    """
 
     def __init__(self, data, image_dir, transform=None):
         self.data = data.reset_index(drop=True).copy()
@@ -79,14 +73,7 @@ class CTSDSampleDataset(Dataset):
 
 
 def load_ctsd_annotations(csv_file):
-    """
-    Load and validate CTSD annotations.
-
-    The supplied annotations.csv contains duplicate file_name rows.
-    The duplicates represent repeated annotations for the same image
-    and have the same category label. Since this is a classification
-    pipeline using the full image, one row per image is retained.
-    """
+    
     csv_file = Path(csv_file)
 
     if not csv_file.exists():
@@ -124,9 +111,7 @@ def load_ctsd_annotations(csv_file):
             "CTSD category labels must be non-negative."
         )
 
-    # The supplied annotations contain 6164 rows but only 5998 unique
-    # image filenames. Verify that duplicate filenames do not disagree
-    # about their classification label before retaining one row.
+    
     category_counts = data.groupby("file_name")["category"].nunique()
     conflicting_files = category_counts[category_counts > 1]
 
@@ -143,15 +128,7 @@ def load_ctsd_annotations(csv_file):
 
 
 def load_ctsd_data(root_dir):
-    """
-    Load CTSD annotations and image directory.
-
-    Expected structure:
-        root_dir/
-            images/
-                *.png
-            annotations.csv
-    """
+    
     root_dir = Path(root_dir)
 
     if not root_dir.exists():
@@ -179,13 +156,7 @@ def create_ctsd_datasets(
     train_transform=None,
     eval_transform=None,
 ):
-    """
-    Create CTSD train and validation datasets.
-
-    The supplied CTSD copy contains one annotated image collection,
-    so it is split into train and validation sets. The split is
-    stratified by category.
-    """
+    
     if train_transform is None:
         train_transform = get_train_transform()
 
@@ -225,9 +196,7 @@ def create_ctsd_dataloaders(
     train_transform=None,
     eval_transform=None,
 ):
-    """
-    Create train and validation DataLoaders for CTSD.
-    """
+
     train_dataset, validation_dataset = create_ctsd_datasets(
         root_dir=root_dir,
         validation_size=validation_size,

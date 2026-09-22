@@ -11,18 +11,6 @@ def train_one_epoch(
     criterion,
     device,
 ):
-    """
-    Train the model for one epoch.
-
-    Supports datasets returning either:
-        (image, label)
-    or:
-        (image, label, metadata)
-
-    Returns:
-        average training loss
-        training accuracy
-    """
 
     model.train()
 
@@ -84,18 +72,6 @@ def validate_one_epoch(
     criterion,
     device,
 ):
-    """
-    Evaluate the model on the validation set.
-
-    Supports datasets returning either:
-        (image, label)
-    or:
-        (image, label, metadata)
-
-    Returns:
-        average validation loss
-        validation accuracy
-    """
 
     model.eval()
 
@@ -110,9 +86,6 @@ def validate_one_epoch(
     )
 
     for batch in progress_bar:
-        # Works with both:
-        # (images, labels)
-        # (images, labels, metadata)
         images = batch[0]
         labels = batch[1]
 
@@ -158,15 +131,6 @@ def train_model(
     learning_rate=0.001,
     checkpoint_path=None,
 ):
-    """
-    Complete model training loop.
-
-    The model with the best validation accuracy
-    is saved when checkpoint_path is provided.
-
-    Returns:
-        Training history dictionary.
-    """
 
     criterion = nn.CrossEntropyLoss()
 
@@ -192,10 +156,6 @@ def train_model(
             f"\nEpoch {epoch + 1}/{epochs}"
         )
 
-        # -------------------------
-        # Training
-        # -------------------------
-
         train_loss, train_accuracy = (
             train_one_epoch(
                 model=model,
@@ -206,10 +166,6 @@ def train_model(
             )
         )
 
-        # -------------------------
-        # Validation
-        # -------------------------
-
         validation_loss, validation_accuracy = (
             validate_one_epoch(
                 model=model,
@@ -218,10 +174,6 @@ def train_model(
                 device=device,
             )
         )
-
-        # -------------------------
-        # Store history
-        # -------------------------
 
         history[
             "train_loss"
@@ -239,9 +191,7 @@ def train_model(
             "validation_accuracy"
         ].append(validation_accuracy)
 
-        # -------------------------
-        # Print results
-        # -------------------------
+        
 
         print(
             f"Train Loss: {train_loss:.4f} | "
@@ -254,10 +204,6 @@ def train_model(
             f"Validation Accuracy: "
             f"{validation_accuracy:.4f}"
         )
-
-        # -------------------------
-        # Save best checkpoint
-        # -------------------------
 
         if (
             validation_accuracy

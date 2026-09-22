@@ -9,9 +9,6 @@ from src.augmentations import (
 
 @pytest.fixture
 def sample_image():
-    """
-    Fake RGB traffic-sign-like image.
-    """
     image = np.random.randint(
         0,
         256,

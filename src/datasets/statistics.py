@@ -4,19 +4,6 @@ import pandas as pd
 
 
 def get_class_distribution(csv_file):
-    """
-    Calculate the number of samples in each traffic-sign class.
-
-    Parameters
-    ----------
-    csv_file : str or Path
-        Path to a CSV file containing a 'ClassId' column.
-
-    Returns
-    -------
-    pandas.Series
-        Sample count for every class.
-    """
 
     csv_file = Path(csv_file)
 
@@ -36,14 +23,6 @@ def get_class_distribution(csv_file):
 
 
 def get_dataset_statistics(csv_file):
-    """
-    Calculate basic statistics for a traffic-sign dataset.
-
-    Returns
-    -------
-    dict
-        Dataset statistics.
-    """
 
     distribution = get_class_distribution(csv_file)
 
@@ -58,9 +37,6 @@ def get_dataset_statistics(csv_file):
 
 
 def print_dataset_statistics(csv_file):
-    """
-    Print dataset statistics in a readable format.
-    """
 
     stats = get_dataset_statistics(csv_file)
 

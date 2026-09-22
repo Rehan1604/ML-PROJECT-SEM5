@@ -13,9 +13,7 @@ from src.training.train import train_model
 from src.utils.seed import set_seed
 
 
-# =========================
-# Configuration
-# =========================
+
 
 BATCH_SIZE = 64
 NUM_WORKERS = 0
@@ -46,15 +44,7 @@ def main():
 
     gtsrb_root = args.gtsrb_root
 
-    # -------------------------
-    # Reproducibility
-    # -------------------------
-
     set_seed(SEED)
-
-    # -------------------------
-    # Device
-    # -------------------------
 
     device = torch.device(
         "cuda" if torch.cuda.is_available() else "cpu"
@@ -68,20 +58,12 @@ def main():
             torch.cuda.get_device_name(0),
         )
 
-    # -------------------------
-    # Dataset path
-    # -------------------------
-
     print("\nGTSRB root:", gtsrb_root)
 
     if not os.path.isdir(gtsrb_root):
         raise FileNotFoundError(
             f"GTSRB dataset directory not found: {gtsrb_root}"
         )
-
-    # -------------------------
-    # Data
-    # -------------------------
 
     print("\nLoading GTSRB dataset...")
 
@@ -99,19 +81,11 @@ def main():
     print("Validation batches:", len(validation_loader))
     print("Test batches:", len(test_loader))
 
-    # -------------------------
-    # Model
-    # -------------------------
-
     model = TrafficSignCNN(
         num_classes=43
     )
 
     print("\nModel created.")
-
-    # -------------------------
-    # Training
-    # -------------------------
 
     os.makedirs(
         os.path.dirname(CHECKPOINT_PATH),
@@ -152,9 +126,6 @@ def main():
         CHECKPOINT_PATH,
     )
 
-    # -------------------------
-    # Results
-    # -------------------------
 
     print("\nTraining completed.")
 

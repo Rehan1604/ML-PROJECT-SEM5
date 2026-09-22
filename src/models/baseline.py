@@ -3,15 +3,6 @@ import torch.nn as nn
 
 
 class TrafficSignCNN(nn.Module):
-    """
-    Baseline CNN for traffic sign classification.
-
-    Input:
-        [batch_size, 3, 32, 32]
-
-    Output:
-        [batch_size, num_classes]
-    """
 
     def __init__(self, num_classes):
         super().__init__()

@@ -5,9 +5,6 @@ import torch
 
 
 def set_seed(seed=42):
-    """
-    Set random seeds for reproducible experiments.
-    """
 
     random.seed(seed)
     np.random.seed(seed)

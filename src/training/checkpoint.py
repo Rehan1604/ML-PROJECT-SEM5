@@ -8,9 +8,6 @@ def save_checkpoint(
     validation_accuracy,
     path,
 ):
-    """
-    Save model and optimizer state.
-    """
 
     checkpoint = {
         "epoch": epoch,
@@ -28,13 +25,6 @@ def load_checkpoint(
     path,
     device,
 ):
-    """
-    Load model and optimizer state.
-
-    Returns:
-        epoch
-        validation_accuracy
-    """
 
     checkpoint = torch.load(
         path,

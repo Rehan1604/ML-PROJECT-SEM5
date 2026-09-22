@@ -8,23 +8,8 @@ from .preprocessing import get_train_transform, get_eval_transform
 
 
 class GTSRBDataset(Dataset):
-    """
-    PyTorch Dataset for the German Traffic Sign Recognition Benchmark (GTSRB).
-    """
 
     def __init__(self, data, root_dir, transform=None):
-        """
-        Parameters
-        ----------
-        data : pandas.DataFrame
-            DataFrame containing at least 'ClassId' and 'Path' columns.
-
-        root_dir : str or Path
-            Root directory of the GTSRB dataset.
-
-        transform : callable, optional
-            torchvision transforms applied to the image.
-        """
 
         self.data = data.reset_index(drop=True)
         self.root_dir = Path(root_dir)
@@ -66,9 +51,6 @@ class GTSRBDataset(Dataset):
 
 
 def load_gtsrb_csv(csv_file):
-    """
-    Load a GTSRB CSV file into a pandas DataFrame.
-    """
 
     csv_file = Path(csv_file)
 
@@ -97,9 +79,6 @@ def create_gtsrb_datasets(
     train_transform=None,
     eval_transform=None,
 ):
-    """
-    Create GTSRB train, validation, and test datasets.
-    """
 
     if train_transform is None:
         train_transform = get_train_transform()
@@ -152,9 +131,6 @@ def create_gtsrb_dataloaders(
     train_transform=None,
     eval_transform=None,
 ):
-    """
-    Create train, validation, and test DataLoaders for GTSRB.
-    """
 
     train_dataset, validation_dataset, test_dataset = create_gtsrb_datasets(
         root_dir=root_dir,

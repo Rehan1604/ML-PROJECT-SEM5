@@ -14,10 +14,6 @@ from src.training.train import train_model
 from src.utils.seed import set_seed
 
 
-# =========================
-# Configuration
-# =========================
-
 BATCH_SIZE = 64
 NUM_WORKERS = 0
 EPOCHS = 10
@@ -46,15 +42,7 @@ def main():
     args = parse_arguments()
     btsd_root = args.btsd_root
 
-    # -------------------------
-    # Reproducibility
-    # -------------------------
-
     set_seed(SEED)
-
-    # -------------------------
-    # Device
-    # -------------------------
 
     device = torch.device(
         "cuda" if torch.cuda.is_available() else "cpu"
@@ -65,20 +53,12 @@ def main():
     if torch.cuda.is_available():
         print("GPU:", torch.cuda.get_device_name(0))
 
-    # -------------------------
-    # Dataset path
-    # -------------------------
-
     print("\nBTSD root:", btsd_root)
 
     if not os.path.isdir(btsd_root):
         raise FileNotFoundError(
             f"BTSD dataset directory not found: {btsd_root}"
         )
-
-    # -------------------------
-    # Data
-    # -------------------------
 
     print("\nLoading BTSD dataset...")
 
@@ -96,18 +76,10 @@ def main():
     print("Validation batches:", len(validation_loader))
     print("Test batches:", len(test_loader))
 
-    # -------------------------
-    # Model
-    # -------------------------
-
     model = TrafficSignCNN(num_classes=62)
 
     print("\nModel created.")
     print("Number of classes:", 62)
-
-    # -------------------------
-    # Training
-    # -------------------------
 
     os.makedirs(
         os.path.dirname(CHECKPOINT_PATH),
@@ -129,16 +101,9 @@ def main():
         checkpoint_path=CHECKPOINT_PATH,
     )
 
-    # -------------------------
-    # Save training history
-    # -------------------------
-
     with open(HISTORY_PATH, "w") as file:
         json.dump(history, file, indent=4)
 
-    # -------------------------
-    # Results
-    # -------------------------
 
     print("\nTraining history saved to:", HISTORY_PATH)
 

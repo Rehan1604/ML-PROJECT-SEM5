@@ -16,9 +16,7 @@ from src.utils.seed import set_seed
 import pandas as pd
 
 
-# =========================
-# Configuration
-# =========================
+
 
 BATCH_SIZE = 64
 NUM_WORKERS = 0
@@ -54,13 +52,6 @@ def parse_arguments():
 
 
 def create_ctsd_test_split(data, seed=42):
-    """
-    Recreate the deterministic CTSD train/validation/test
-    split used during training.
-
-    The test portion must be identical to the one used
-    when the checkpoint was trained.
-    """
 
     test_parts = []
 
@@ -134,15 +125,8 @@ def main():
 
     ctsd_root = args.ctsd_root
 
-    # =========================
-    # Reproducibility
-    # =========================
 
     set_seed(SEED)
-
-    # =========================
-    # Device
-    # =========================
 
     device = torch.device(
         "cuda"
@@ -157,10 +141,6 @@ def main():
             "GPU:",
             torch.cuda.get_device_name(0),
         )
-
-    # =========================
-    # Load CTSD
-    # =========================
 
     print("\nLoading CTSD dataset...")
 
@@ -178,10 +158,6 @@ def main():
         data["category"].nunique(),
     )
 
-    # =========================
-    # Recreate test split
-    # =========================
-
     test_data = create_ctsd_test_split(
         data=data,
         seed=SEED,
@@ -197,19 +173,11 @@ def main():
         test_data["category"].nunique(),
     )
 
-    # =========================
-    # Dataset
-    # =========================
-
     test_dataset = CTSDSampleDataset(
         data=test_data,
         image_dir=image_dir,
         transform=get_eval_transform(),
     )
-
-    # =========================
-    # DataLoader
-    # =========================
 
     test_loader = DataLoader(
         test_dataset,
@@ -223,26 +191,16 @@ def main():
         len(test_loader),
     )
 
-    # =========================
-    # Model
-    # =========================
-
     model = TrafficSignCNN(
         num_classes=NUM_CLASSES
     )
 
-    # =========================
-    # Optimizer
-    # =========================
 
     optimizer = torch.optim.Adam(
         model.parameters(),
         lr=0.001,
     )
 
-    # =========================
-    # Load checkpoint
-    # =========================
 
     print("\nLoading checkpoint...")
 
@@ -269,10 +227,6 @@ def main():
         validation_accuracy,
     )
 
-    # =========================
-    # Evaluation
-    # =========================
-
     print(
         "\nEvaluating on CTSD test set..."
     )
@@ -288,10 +242,6 @@ def main():
         data_loader=test_loader,
         device=device,
     )
-
-    # =========================
-    # Print results
-    # =========================
 
     print(
         "\n===== CTSD BASELINE TEST RESULTS ====="
@@ -316,10 +266,6 @@ def main():
         "Number of Test Samples:",
         len(all_labels),
     )
-
-    # =========================
-    # Save results
-    # =========================
 
     os.makedirs(
         "experiments/results",
@@ -346,10 +292,6 @@ def main():
             file,
             indent=4,
         )
-
-    # =========================
-    # Save confusion matrix
-    # =========================
 
     with open(
         CONFUSION_MATRIX_PATH,

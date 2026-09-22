@@ -12,11 +12,6 @@ IMAGE_EXTENSIONS = {".ppm", ".png", ".jpg", ".jpeg"}
 
 
 class BTSDSampleDataset(Dataset):
-    """
-    PyTorch Dataset for the Belgium Traffic Sign Dataset (BTSD).
-
-    Labels are obtained from the class-folder name (00000 to 00062).
-    """
 
     def __init__(self, samples, transform=None):
         self.samples = list(samples)
@@ -50,19 +45,7 @@ class BTSDSampleDataset(Dataset):
 
 
 def _collect_samples(split_dir):
-    """
-    Collect (image_path, class_id) pairs from a BTSD split directory.
 
-    Expected structure:
-        split_dir/
-            00000/
-                image.ppm
-            00001/
-                image.ppm
-            ...
-            00062/
-                image.ppm
-    """
     split_dir = Path(split_dir)
 
     if not split_dir.exists():
@@ -116,18 +99,6 @@ def _collect_samples(split_dir):
 
 
 def load_btsd_samples(root_dir):
-    """
-    Load BTSD training and testing image samples.
-
-    Expected root structure:
-        root_dir/
-            BelgiumTSC_Training/
-                Training/
-                    00000/ ... 00062/
-            BelgiumTSC_Testing/
-                Testing/
-                    00000/ ... 00062/
-    """
     root_dir = Path(root_dir)
 
     if not root_dir.exists():
@@ -151,12 +122,6 @@ def create_btsd_datasets(
     train_transform=None,
     eval_transform=None,
 ):
-    """
-    Create BTSD train, validation, and test datasets.
-
-    The official BTSD testing split is kept untouched.
-    Only the BTSD training split is divided into train and validation.
-    """
     if train_transform is None:
         train_transform = get_train_transform()
 
@@ -199,9 +164,7 @@ def create_btsd_dataloaders(
     train_transform=None,
     eval_transform=None,
 ):
-    """
-    Create train, validation, and test DataLoaders for BTSD.
-    """
+
     train_dataset, validation_dataset, test_dataset = create_btsd_datasets(
         root_dir=root_dir,
         validation_size=validation_size,

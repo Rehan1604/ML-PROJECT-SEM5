@@ -4,14 +4,6 @@ from tqdm import tqdm
 
 
 def evaluate_model(model, data_loader, device):
-    """
-    Evaluate a classification model.
-
-    Returns:
-        accuracy: overall classification accuracy
-        f1: macro F1 score
-        confusion: confusion matrix
-    """
 
     model.eval()
 
@@ -27,12 +19,6 @@ def evaluate_model(model, data_loader, device):
         )
 
         for batch in progress_bar:
-
-            # GTSRB/BTSD return:
-            # images, labels
-            #
-            # CTSD currently returns:
-            # images, labels, metadata
 
             images = batch[0]
             labels = batch[1]
